@@ -1,6 +1,8 @@
 package com.example.catsnducks.adapters
 
 import android.graphics.BitmapFactory
+import android.provider.ContactsContract
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,18 +17,32 @@ import com.example.catsnducks.adapters.lifecycler.LifecycleViewHolder
 import com.example.catsnducks.data.database.DatabaseRepository
 import com.example.catsnducks.data.model.Picture
 
-class GalleryAdapter(val pictures: List<Picture>, val listener: onGalleryItemListener): RecyclerView.Adapter<GalleryAdapter.GalleryViewHolder>(){
+class GalleryAdapter(val pictures: List<Picture>, val listener: onGalleryItemListener): LifecycleRecyclerAdapter<GalleryAdapter.GalleryViewHolder>(){
 
-    class GalleryViewHolder(viewItem: View, val listener: onGalleryItemListener): RecyclerView.ViewHolder(viewItem), View.OnClickListener{
+    class GalleryViewHolder(viewItem: View, val listener: onGalleryItemListener): LifecycleViewHolder(viewItem), View.OnClickListener{
         var pic : ImageView? = viewItem.findViewById(R.id.fragment_gallery_single_item_picture)
+
+        //private val observer = Observer()
 
         init {
             pic?.setOnClickListener(this)
+            //lifecycle.addObserver(observer)
         }
 
         override fun onClick(v: View?) {
             listener.onClick(adapterPosition)
         }
+
+/*        class Observer() : LifecycleObserver {
+            @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+            fun onCreate() {
+
+            }
+            @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+            fun onDestroy() {
+
+            }
+        }*/
     }
 
 
@@ -36,16 +52,26 @@ class GalleryAdapter(val pictures: List<Picture>, val listener: onGalleryItemLis
     }
 
     override fun onBindViewHolder(holder: GalleryViewHolder, position: Int) {
-        val bitmap = BitmapFactory.decodeByteArray(pictures[position].image, 0, pictures[position].image!!.size)
+        if (pictures[position].image!=null){
+            val bitmap = BitmapFactory.decodeByteArray(pictures[position].image, 0, pictures[position].image!!.size)
 
-        holder.pic?.setImageBitmap(bitmap)
+            holder.pic?.setImageBitmap(bitmap)
+        }
+
     }
 
     override fun getItemCount(): Int = pictures.size
 
+    override fun onViewDetachedFromWindow(holder: GalleryViewHolder) {
+        super.onViewDetachedFromWindow(holder)
 
+    }
 
     interface onGalleryItemListener{
         fun onClick(position: Int)
+    }
+
+    interface onGalleryItemStateChangeListener{
+        fun onCreate()
     }
 }

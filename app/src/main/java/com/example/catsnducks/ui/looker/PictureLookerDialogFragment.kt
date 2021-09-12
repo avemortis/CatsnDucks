@@ -71,12 +71,12 @@ class PictureLookerDialogFragment() : DialogFragment(), View.OnClickListener {
         val repository = DatabaseRepository.get()
         val pic = Picture()
         pic.url = pictureLookerViewModel.url
-        pic.image = image
+        //pic.image = image
         repository.addPicture(pic)
 
-/*        val preview = PicturePreview()
+        val preview = PicturePreview()
         preview.image = image
-        repository.addPreview(preview)*/
+        repository.addPreview(preview)
     }
 
     override fun onClick(v: View?) {

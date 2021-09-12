@@ -1,10 +1,7 @@
 package com.example.catsnducks.data.database
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 import com.example.catsnducks.data.model.Picture
 import com.example.catsnducks.data.model.PicturePreview
 
@@ -15,6 +12,7 @@ interface CatsAndDucksDAO {
 
     @Query("SELECT * FROM PicturePreview WHERE id LIKE:id")
     fun getPreviewForPicture(id: Int): LiveData<PicturePreview>
+
 
     @Insert
     fun addPicture(picture: Picture)
