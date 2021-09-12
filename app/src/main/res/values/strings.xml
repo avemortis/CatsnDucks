@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Cats\'n\'Ducks</string>
+    <string name="tab_text_1">Choose your destiny</string>
+    <string name="tab_text_2">Gallery</string>
+
+    <string name="cat_pill">cat</string>
+    <string name="duck_pill">duck</string>
+</resources>

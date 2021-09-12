@@ -1,0 +1,104 @@
+package com.example.catsnducks.ui.looker
+
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.icu.number.NumberFormatter.with
+import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.core.graphics.drawable.toBitmap
+import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.ViewModelProvider
+import com.example.catsnducks.data.database.DatabaseRepository
+import com.example.catsnducks.data.model.Picture
+import com.example.catsnducks.data.model.PicturePreview
+import com.example.catsnducks.databinding.DialogfragmentPictureLookerBinding
+import com.squareup.picasso.MemoryPolicy
+import com.squareup.picasso.NetworkPolicy
+import com.squareup.picasso.Picasso
+import java.io.ByteArrayOutputStream
+
+
+class PictureLookerDialogFragment() : DialogFragment(), View.OnClickListener {
+    private lateinit var likeButton: ImageView
+    private lateinit var picture: ImageView
+
+    private var _binding: DialogfragmentPictureLookerBinding? = null
+    private val binding get() = _binding!!
+
+    private var touched = false
+
+    private lateinit var pictureLookerViewModel: PictureLookerViewModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        pictureLookerViewModel = ViewModelProvider(this).get(PictureLookerViewModel::class.java)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = DialogfragmentPictureLookerBinding.inflate(inflater, container, false)
+        val root = binding.root
+
+        picture = binding.dialogFragmentPictureLookerPicture
+        picture.setOnClickListener(this)
+
+        likeButton = binding.dialogFragmentPictureLookerLikeButton
+        likeButton.setOnClickListener(this)
+
+        if (pictureLookerViewModel.url.isEmpty()) pictureLookerViewModel.url = arguments?.getString(URL_TAG)!!
+        pictureLookerViewModel.liked = arguments?.getBoolean(LIKE_TAG)!!
+
+        Picasso.get().load(pictureLookerViewModel.url).networkPolicy(NetworkPolicy.NO_CACHE, NetworkPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_STORE, MemoryPolicy.NO_CACHE).into(picture)
+
+        return root
+    }
+
+    fun saveToGallery(){
+        val bitmap = (picture.getDrawable() as BitmapDrawable).getBitmap()
+        val stream = ByteArrayOutputStream()
+
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 1, stream)
+
+        val image = stream.toByteArray()
+
+        val repository = DatabaseRepository.get()
+        val pic = Picture()
+        pic.url = pictureLookerViewModel.url
+        pic.image = image
+        repository.addPicture(pic)
+
+/*        val preview = PicturePreview()
+        preview.image = image
+        repository.addPreview(preview)*/
+    }
+
+    override fun onClick(v: View?) {
+        when (v?.id) {
+            picture.id -> {
+                if (!touched) touched = true
+                else {
+                    saveToGallery()
+                    Log.d(TAG, "saved")
+                }
+            }
+        }
+    }
+
+    companion object {
+        const val TAG = "PictureLooker"
+
+        const val LIKE_TAG = "LikeTag"
+        const val URL_TAG = "UrlTag"
+    }
+
+    interface OnLikeClickListener{
+        fun onLikeClicked()
+    }
+}
