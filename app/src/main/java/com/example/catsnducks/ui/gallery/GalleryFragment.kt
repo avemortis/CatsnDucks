@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.catsnducks.R
 import com.example.catsnducks.adapters.GalleryAdapter
 import com.example.catsnducks.adapters.RecyclerViewItemStateChangeListener
+import com.example.catsnducks.appComponent
 import com.example.catsnducks.data.database.DatabaseRepository
 import com.example.catsnducks.data.model.Gallery
 import com.example.catsnducks.data.model.Picture
@@ -65,12 +66,7 @@ class GalleryFragment : Fragment(), GalleryAdapter.onGalleryItemListener, Pictur
 
     override fun onClick(position: Int) {
         val dialog = PictureLookerDialogFragment()
-        val bundle = Bundle()
-        val liked = true
-        val url = Gallery.galleryPictures[position].url
-        bundle.putString(PictureLookerDialogFragment.URL_TAG, url)
-        bundle.putBoolean(PictureLookerDialogFragment.LIKE_TAG, liked)
-        bundle.putInt(PictureLookerDialogFragment.POSITION_TAG, position)
+        val bundle = requireActivity().appComponent.getDialogFragmentBundleFactory().getPictureLookerBundle(position)
 
         dialog.arguments = bundle
         dialog.show(this.parentFragmentManager, PictureLookerDialogFragment.TAG)

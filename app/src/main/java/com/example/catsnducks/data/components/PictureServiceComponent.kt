@@ -7,4 +7,6 @@ import dagger.Component
 @Component
 interface PictureServiceComponent {
     fun getPictureService(): PictureService
+
+    fun getDialogFragmentBundleFactory() : DialogFragmentBundleFactory
 }

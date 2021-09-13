@@ -11,7 +11,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import com.example.catsnducks.appComponent
 import com.example.catsnducks.data.api.PictureService
+import com.example.catsnducks.data.components.DialogFragmentBundleFactory
 import com.example.catsnducks.data.model.Picture
+import com.example.catsnducks.databinding.DialogfragmentPictureLookerBinding
 import com.example.catsnducks.databinding.FragmentMorpheusBinding
 import com.example.catsnducks.ui.looker.PictureLookerDialogFragment
 import com.example.catsnducks.utils.PictureTypes
@@ -87,11 +89,10 @@ class MorpheusFragment : Fragment(), View.OnClickListener {
     }
 
     private fun setArgsAndShowPictureLookerDialogFragment(url : String){
+        val bundleFactory : DialogFragmentBundleFactory = requireActivity().appComponent.getDialogFragmentBundleFactory()
         val dialog = PictureLookerDialogFragment()
-        val bundle = Bundle()
-        val liked = false
+        val bundle = bundleFactory.getPictureLookerBundle(null)
         bundle.putString(PictureLookerDialogFragment.URL_TAG, url)
-        bundle.putBoolean(PictureLookerDialogFragment.LIKE_TAG, liked)
 
         dialog.arguments = bundle
         dialog.show(this.parentFragmentManager, PictureLookerDialogFragment.TAG)
