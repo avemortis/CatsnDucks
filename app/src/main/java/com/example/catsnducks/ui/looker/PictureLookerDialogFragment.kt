@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
@@ -71,10 +72,13 @@ class PictureLookerDialogFragment() : DialogFragment(), View.OnClickListener {
     }
 
     private fun changeLike(){
-        pictureLookerViewModel.liked = (!pictureLookerViewModel.liked!!)
         if (pictureLookerViewModel.liked == true) {
+            pictureLookerViewModel.liked = false
             deleteFromDatabase(pictureLookerViewModel.position!!)
             this.dismiss()
+        }
+        else if (touched){
+            saveToDataBase()
         }
     }
 
@@ -109,6 +113,7 @@ class PictureLookerDialogFragment() : DialogFragment(), View.OnClickListener {
         val preview = PicturePreview()
         preview.image = image
         repository.addPreview(preview)
+        Toast.makeText(requireContext(), "saved", Toast.LENGTH_SHORT).show()
     }
 
     private fun deleteFromDatabase(position : Int){
@@ -123,11 +128,14 @@ class PictureLookerDialogFragment() : DialogFragment(), View.OnClickListener {
                 if (!touched) touched = true
                 else {
                     saveToDataBase()
-                    Log.d(TAG, "saved")
+
                 }
             }
             likeButton.id -> {
-                changeLike()
+                if (!touched) touched = true
+                else {
+                    changeLike()
+                }
             }
         }
     }
