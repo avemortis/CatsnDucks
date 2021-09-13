@@ -30,6 +30,24 @@ class DatabaseRepository private constructor(context: Context){
         }
     }
 
+    fun deletePreview(preview: PicturePreview){
+        executor.execute{
+            pictureDAO.deletePreview(preview)
+        }
+    }
+
+    fun deletePictureById(id : Int){
+        executor.execute{
+            pictureDAO.deletePictureById(id)
+        }
+    }
+
+    fun deletePreviewById(id : Int){
+        executor.execute{
+            pictureDAO.deletePreviewById(id)
+        }
+    }
+
     fun addPicture(picture: Picture){
         executor.execute{
             pictureDAO.addPicture(picture)

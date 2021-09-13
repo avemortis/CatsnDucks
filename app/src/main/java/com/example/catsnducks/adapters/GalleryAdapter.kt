@@ -53,9 +53,10 @@ class GalleryAdapter(val pictures: List<Picture>, val listener: onGalleryItemLis
 
     override fun onBindViewHolder(holder: GalleryViewHolder, position: Int) {
         if (pictures[position].image!=null){
-            val bitmap = BitmapFactory.decodeByteArray(pictures[position].image, 0, pictures[position].image!!.size)
-
-            holder.pic?.setImageBitmap(bitmap)
+            if (pictures[position].bitmap==null){
+                pictures[position].bitmap = BitmapFactory.decodeByteArray(pictures[position].image, 0, pictures[position].image!!.size)
+            }
+            holder.pic?.setImageBitmap(pictures[position].bitmap)
         }
 
     }
@@ -69,9 +70,5 @@ class GalleryAdapter(val pictures: List<Picture>, val listener: onGalleryItemLis
 
     interface onGalleryItemListener{
         fun onClick(position: Int)
-    }
-
-    interface onGalleryItemStateChangeListener{
-        fun onCreate()
     }
 }

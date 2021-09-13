@@ -1,7 +1,9 @@
 package com.example.catsnducks.data.model
 
+import android.graphics.Bitmap
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import java.util.*
@@ -14,6 +16,8 @@ data class Picture constructor (
     @SerializedName("")
     @PrimaryKey (autoGenerate = true)
     var id : Int? = null,
-    @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
-    var image: ByteArray? = null
+    @Ignore
+    var image: ByteArray? = null,
+    @Ignore
+    var bitmap: Bitmap? = null
 )

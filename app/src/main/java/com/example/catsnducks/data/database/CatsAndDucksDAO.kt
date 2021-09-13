@@ -13,6 +13,11 @@ interface CatsAndDucksDAO {
     @Query("SELECT * FROM PicturePreview WHERE id LIKE:id")
     fun getPreviewForPicture(id: Int): LiveData<PicturePreview>
 
+    @Query("DELETE FROM Picture WHERE id LIKE:id")
+    fun deletePictureById(id: Int)
+
+    @Query("DELETE FROM PicturePreview WHERE id LIKE:id")
+    fun deletePreviewById(id: Int)
 
     @Insert
     fun addPicture(picture: Picture)
@@ -22,4 +27,7 @@ interface CatsAndDucksDAO {
 
     @Delete
     fun deletePicture(picture: Picture)
+
+    @Delete
+    fun deletePreview(preview: PicturePreview)
 }

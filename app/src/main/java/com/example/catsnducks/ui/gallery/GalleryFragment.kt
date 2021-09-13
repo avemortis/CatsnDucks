@@ -9,11 +9,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.catsnducks.R
 import com.example.catsnducks.adapters.GalleryAdapter
 import com.example.catsnducks.adapters.RecyclerViewItemStateChangeListener
 import com.example.catsnducks.data.database.DatabaseRepository
+import com.example.catsnducks.data.model.Gallery
 import com.example.catsnducks.data.model.Picture
 import com.example.catsnducks.data.model.PicturePreview
 import com.example.catsnducks.databinding.FragmentGalleryBinding
@@ -45,12 +47,6 @@ class GalleryFragment : Fragment(), GalleryAdapter.onGalleryItemListener, Pictur
         galleryRecyclerView = binding.fragmentGalleryRecyclerview
         prepareRecyclerView(galleryRecyclerView)
 
-/*        val liveData = DatabaseRepository.get().getPreviewForPicture(1)
-        liveData.observe(viewLifecycleOwner, {
-            val preview : PicturePreview = it
-            Log.d(TAG, it.image?.size.toString())
-        })*/
-
         return root
     }
 
@@ -59,9 +55,8 @@ class GalleryFragment : Fragment(), GalleryAdapter.onGalleryItemListener, Pictur
         val gallery = DatabaseRepository.get().getPictures()
 
         gallery.observe(viewLifecycleOwner, {
-
-            galleryViewModel.galleryPictures = it.toMutableList()
-            val queueDownloader = QueueDownloader(viewLifecycleOwner, galleryViewModel.galleryPictures, this)
+            Gallery.galleryPictures = it.toMutableList()
+            val queueDownloader = QueueDownloader(viewLifecycleOwner, Gallery.galleryPictures, this)
             queueDownloader.start()
             recyclerView.adapter = GalleryAdapter(it, this)
         })
@@ -72,10 +67,10 @@ class GalleryFragment : Fragment(), GalleryAdapter.onGalleryItemListener, Pictur
         val dialog = PictureLookerDialogFragment()
         val bundle = Bundle()
         val liked = true
-        val url = galleryViewModel.galleryPictures[position].url
-        //val url = galleryViewModel.galleryPictures.value!![position].url
+        val url = Gallery.galleryPictures[position].url
         bundle.putString(PictureLookerDialogFragment.URL_TAG, url)
         bundle.putBoolean(PictureLookerDialogFragment.LIKE_TAG, liked)
+        bundle.putInt(PictureLookerDialogFragment.POSITION_TAG, position)
 
         dialog.arguments = bundle
         dialog.show(this.parentFragmentManager, PictureLookerDialogFragment.TAG)
@@ -89,18 +84,12 @@ class GalleryFragment : Fragment(), GalleryAdapter.onGalleryItemListener, Pictur
     }
 
     override fun onCreate(position: Int) {
-/*        val data = DatabaseRepository.get().getPreviewForPicture(position + 1)
-        data.observe(viewLifecycleOwner, {
-            galleryViewModel.galleryPictures[position].image = it.image
-            galleryRecyclerView.adapter?.notifyItemChanged(position)
-        })*/
     }
 
     override fun onDestroy(position: Int) {
     }
 
     override fun onSingleLoad() {
-        //galleryRecyclerView.adapter!!.notifyItemChanged(galleryViewModel.galleryPictures.size)
     }
 
     override fun onFullLoad() {
